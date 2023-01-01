@@ -462,7 +462,7 @@ class _PlayerPageState extends State<PlayerPage> with TickerProviderStateMixin {
               },
             ),
             Container(
-              height: 4,
+              height: 1,
             ),
             Row(
                 mainAxisAlignment: MainAxisAlignment.center,
