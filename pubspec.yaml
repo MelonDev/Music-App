@@ -14,6 +14,18 @@ dependencies:
 
   cupertino_icons: ^1.0.5
   google_fonts: ^3.0.1
+  image: ^3.3.0
+  audio_video_progress_bar: ^0.11.0
+  percent_indicator: ^4.2.2
+  custom_sliding_segmented_control: ^1.7.3
+  volume_controller: ^2.0.6
+
+  bloc: ^8.1.0
+  flutter_bloc: ^8.1.1
+
+  audio_service: ^0.18.8
+  just_audio: ^0.9.30
+  just_audio_background: ^0.0.1-beta.9
 
 dev_dependencies:
   flutter_test:
@@ -24,3 +36,5 @@ dev_dependencies:
 flutter:
 
   uses-material-design: true
+  assets:
+    - assets/
