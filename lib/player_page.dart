@@ -703,21 +703,99 @@ class _PlayerPageState extends State<PlayerPage> with TickerProviderStateMixin {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Container(
-          alignment: Alignment.bottomLeft,
-          height: 46,
-          padding: const EdgeInsets.only(bottom: 6),
-          margin: const EdgeInsets.only(left: 20),
-          child: Text(
-            "เพลย์ลิสต์",
-            overflow: TextOverflow.ellipsis,
-            maxLines: 3,
-            style: TextStyle(
-                color: theme!.colorScheme.secondary,
-                fontWeight: FontWeight.bold,
-                fontSize: 24),
-          ),
+        Row(
+          children: [
+            Expanded(
+              child:Container(
+                alignment: Alignment.bottomLeft,
+                height: 46,
+                padding: const EdgeInsets.only(bottom: 6),
+                margin: const EdgeInsets.only(left: 28),
+                child: Text(
+                  "เพลย์ลิสต์",
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 3,
+                  style: TextStyle(
+                      color: theme!.colorScheme.secondary,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 24),
+                ),
+              )
+            ),
+            player != null ? StreamBuilder<LoopMode>(
+              stream: player.loopModeStream,
+              builder: (context, snapshot) {
+                final loopMode = snapshot.data ?? LoopMode.off;
+                List<Icon> icons = [
+                  Icon(
+                    CupertinoIcons.repeat,
+                    size: 22,
+                    color: theme!.colorScheme.secondary,
+                  ),
+                  const Icon(
+                    CupertinoIcons.repeat,
+                    size: 22,
+                    color: Colors.orange,
+                  ),
+                  const Icon(
+                    CupertinoIcons.repeat_1,
+                    size: 22,
+                    color: Colors.orange,
+                  ),
+                ];
+                const cycleModes = [
+                  LoopMode.off,
+                  LoopMode.all,
+                  LoopMode.one,
+                ];
+                final index = cycleModes.indexOf(loopMode);
+                return Container(
+                  height: 34,
+                  width: 34,
+                  child: IconButton(
+                    splashColor: Colors.transparent,
+                    padding: const EdgeInsets.all(6),
+                    onPressed: () {
+                      player.setLoopMode(cycleModes[
+                      (cycleModes.indexOf(loopMode) + 1) %
+                          cycleModes.length]);
+                    },
+                    icon: icons[index],
+                  ),
+                );
+              },
+            ) : Container(),
+            Container(width: 10,),
+            player != null ? StreamBuilder<bool>(
+              stream: player.shuffleModeEnabledStream,
+              builder: (context, snapshot) {
+                final shuffleModeEnabled = snapshot.data ?? false;
+                return Container(
+                    height: 34,
+                    width: 34,
+                    margin: EdgeInsets.only(right: 28),
+                    child: IconButton(
+                      padding: const EdgeInsets.all(6),
+                      onPressed: () async {
+                        final enable = !shuffleModeEnabled;
+                        if (enable) {
+                          await player.shuffle();
+                        }
+                        await player.setShuffleModeEnabled(enable);
+                      },
+                      icon: Icon(
+                        CupertinoIcons.shuffle,
+                        size: 22,
+                        color: shuffleModeEnabled
+                            ? Colors.orange
+                            : theme!.colorScheme.secondary,
+                      ),
+                    ));
+              },
+            ) :Container(),
+          ]
         ),
+        Container(height: 1,color: theme!.colorScheme.primary.withOpacity(0.15),margin: const EdgeInsets.only(left:28,right:28),),
         Expanded(
             child: player != null
                 ? StreamBuilder<SequenceState?>(
@@ -727,7 +805,7 @@ class _PlayerPageState extends State<PlayerPage> with TickerProviderStateMixin {
                       final sequence = state?.sequence ?? [];
 
                       return ReorderableListView(
-                        padding: const EdgeInsets.only(left: 20, right: 20),
+                        padding: const EdgeInsets.only(left: 20, right: 20,top:16),
                         onReorder: (int oldIndex, int newIndex) {
                           if (oldIndex < newIndex) newIndex--;
                           //_playlist.move(oldIndex, newIndex);
@@ -736,14 +814,32 @@ class _PlayerPageState extends State<PlayerPage> with TickerProviderStateMixin {
                           for (var i = 0; i < sequence.length; i++)
                             Container(
                               key: ValueKey(sequence[i]),
-                              margin: const EdgeInsets.only(bottom: 8),
+                              margin: (i != state?.currentIndex)
+                                  ? const EdgeInsets.only(
+                                      left: 8, right: 8, bottom: 4, top: 4)
+                                  : const EdgeInsets.only(
+                                      left: 0, right: 0, bottom: 8, top: 4),
                               decoration: BoxDecoration(
-                                  color: i == state!.currentIndex
-                                      ? theme!.colorScheme.primary
-                                          .withOpacity(0.9)
-                                      : theme!.colorScheme.primary
-                                          .withOpacity(0.05),
-                                  borderRadius: BorderRadius.circular(12)),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: i == state?.currentIndex
+                                          ? theme!.colorScheme.primary
+                                              .withOpacity(.2)
+                                          : Colors.transparent,
+                                      blurRadius: 10.0,
+                                      spreadRadius: 2.0,
+                                      offset: const Offset(
+                                        0.0,
+                                        5.0,
+                                      ),
+                                    ),
+                                  ],
+                                  color: i == state?.currentIndex
+                                      ? theme!.colorScheme.onSecondary
+                                          .withOpacity(1.0)
+                                      : theme!.colorScheme.secondaryContainer
+                                          .withOpacity(0.2),
+                                  borderRadius: BorderRadius.circular(16)),
                               child: Dismissible(
                                   key: ValueKey(sequence[i]),
                                   background: Container(
@@ -763,7 +859,6 @@ class _PlayerPageState extends State<PlayerPage> with TickerProviderStateMixin {
                                   },
                                   child: GestureDetector(
                                     onTap: () {
-                                      print("TEST");
                                       player.seek(Duration.zero, index: i);
                                       player.play();
                                     },
@@ -794,17 +889,15 @@ class _PlayerPageState extends State<PlayerPage> with TickerProviderStateMixin {
                                                   children: [
                                                     Image.network(
                                                         "${sequence[i].tag.artUri}"),
-                                                    i == state.currentIndex
+                                                    i == state?.currentIndex
                                                         ? BackdropFilter(
                                                             filter: ImageFilter
                                                                 .blur(
-                                                                    sigmaX: 3.0,
+                                                                    sigmaX: 2.0,
                                                                     sigmaY:
-                                                                        3.0),
+                                                                        2.0),
                                                             child: Container(
-                                                                color: theme!
-                                                                    .colorScheme
-                                                                    .primary
+                                                                color: Colors.black
                                                                     .withOpacity(
                                                                         0.3),
                                                                 padding:
@@ -831,13 +924,9 @@ class _PlayerPageState extends State<PlayerPage> with TickerProviderStateMixin {
                                                         TextOverflow.ellipsis,
                                                     maxLines: 3,
                                                     style: TextStyle(
-                                                        color: i ==
-                                                                state
-                                                                    .currentIndex
-                                                            ? theme!.colorScheme
-                                                                .surface
-                                                            : theme!.colorScheme
-                                                                .secondary,
+                                                        color: theme!
+                                                            .colorScheme
+                                                            .secondary,
                                                         fontWeight:
                                                             FontWeight.bold,
                                                         fontSize: 18),
@@ -848,15 +937,9 @@ class _PlayerPageState extends State<PlayerPage> with TickerProviderStateMixin {
                                                         TextOverflow.ellipsis,
                                                     maxLines: 1,
                                                     style: TextStyle(
-                                                        color: (i ==
-                                                                    state
-                                                                        .currentIndex
-                                                                ? theme!
-                                                                    .colorScheme
-                                                                    .surface
-                                                                : theme!
-                                                                    .colorScheme
-                                                                    .secondary)
+                                                        color: (theme!
+                                                                .colorScheme
+                                                                .secondary)
                                                             .withOpacity(0.8),
                                                         fontWeight:
                                                             FontWeight.normal,

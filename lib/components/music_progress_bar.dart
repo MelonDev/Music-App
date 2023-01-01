@@ -16,6 +16,16 @@ Widget musicProgressBar(
 
   Duration remainingDuration = Duration(milliseconds: totalValue - progressValue);
   double percent = (bufferValue / totalValue).toDouble();
+
+  double value = progressValue.toDouble();
+  double min = 0;
+  double max = totalValue.toDouble();
+
+  if(value < min && value > max){
+    value = 0;
+    max = 0;
+  }
+
   return Column(
     children: [
       Container(height:8),
@@ -53,9 +63,9 @@ Widget musicProgressBar(
                   width: width,
                   margin: const EdgeInsets.symmetric(horizontal: 16),
                   child: Slider(
-                    value: progressValue.toDouble(),
-                    min: 0,
-                    max: totalValue.toDouble(),
+                    value: value,
+                    min: min,
+                    max: max,
                     onChanged: (double value) {
 
                       if(onChanged != null){
