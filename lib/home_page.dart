@@ -1,8 +1,13 @@
+import 'dart:io';
+
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'package:just_audio/just_audio.dart';
 //import 'package:music_app/MockMusic.dart';
 import 'package:music_app/color_helper.dart';
@@ -74,12 +79,23 @@ class _HomePageState extends State<HomePage>
   @override
   void initState() {
     super.initState();
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      fetchAll();
+    });
     playAnimationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 500),
     );
     playAnimation =
         Tween<double>(begin: 0.0, end: 1.0).animate(playAnimationController);
+  }
+
+  Future<void> fetchAll() async {
+    if (!kIsWeb) {
+      if (Platform.isAndroid || Platform.isIOS) {
+        await FlutterDisplayMode.setHighRefreshRate();
+      }
+    }
   }
 
   mockTheme() async {

@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:line_icons/line_icons.dart';
 import 'package:music_app/color_helper.dart';
 import 'package:music_app/components/inner_shadow.dart';
 import 'package:music_app/components/music_progress_bar.dart';
@@ -45,6 +46,7 @@ class _PlayerPageState extends State<PlayerPage> with TickerProviderStateMixin {
   int page = 0;
 
   bool isEnableVolumeControl = false;
+  bool isSubscribed = false;
 
   void _playStopOnPressed() {
     if (_isPlaying) {
@@ -141,7 +143,7 @@ class _PlayerPageState extends State<PlayerPage> with TickerProviderStateMixin {
         ),
         margin: const EdgeInsets.only(top: 8),
         child: Scaffold(
-          bottomNavigationBar: bottomToolbar(),
+          bottomNavigationBar: isSubscribed ? null :bottomToolbar(),
           backgroundColor: Colors.transparent,
           appBar: AppBar(
             toolbarHeight: 76,
@@ -261,63 +263,67 @@ class _PlayerPageState extends State<PlayerPage> with TickerProviderStateMixin {
   Widget bottomToolbar() {
     return Container(
         decoration: BoxDecoration(
-            color: theme!.colorScheme.secondaryContainer.withOpacity(0.4),
+            color: theme!.colorScheme.secondaryContainer.withOpacity(isSubscribed ? 0.3 :0.4),
             borderRadius: BorderRadius.circular(12)),
         height: 60,
         padding: const EdgeInsets.only(left: 16, right: 12),
         margin: const EdgeInsets.only(left: 20, right: 20, bottom: 10),
         width: MediaQuery.of(context).size.width,
         child: Row(
-          children: [
-            Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    "แพ็กเกจรายเดือน",
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 1,
-                    style: TextStyle(
-                        color: theme!.colorScheme.primary,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18),
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "แพ็กเกจรายเดือน",
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                          style: TextStyle(
+                              color: theme!.colorScheme.primary,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18),
+                        ),
+                        Text(
+                          "เข้าถึงประสบการณ์เต็มรูปแบบ",
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                          style: TextStyle(
+                              color: theme!.colorScheme.primary,
+                              fontWeight: FontWeight.normal,
+                              fontSize: 14),
+                        )
+                      ],
+                    ),
                   ),
-                  Text(
-                    "เข้าถึงประสบการณ์เต็มรูปแบบ",
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 1,
-                    style: TextStyle(
-                        color: theme!.colorScheme.primary,
-                        fontWeight: FontWeight.normal,
-                        fontSize: 14),
-                  )
+                  Container(
+                      margin: const EdgeInsets.only(left: 8),
+                      width: 80,
+                      height: 36,
+                      child: MaterialButton(
+                        onPressed: () {
+                          setState(() {
+                            isSubscribed = true;
+                          });
+                        },
+                        color: theme!.colorScheme.surface,
+                        elevation: _isPlaying ? 4 : 10,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(62.0),
+                        ),
+                        child: Text(
+                          "สมัคร",
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                          style: TextStyle(
+                              color: theme!.colorScheme.primary,
+                              fontWeight: FontWeight.normal,
+                              fontSize: 18),
+                        ),
+                      ))
                 ],
-              ),
-            ),
-            Container(
-                margin: const EdgeInsets.only(left: 8),
-                width: 80,
-                height: 36,
-                child: MaterialButton(
-                  onPressed: () {},
-                  color: theme!.colorScheme.surface,
-                  elevation: _isPlaying ? 4 : 10,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(62.0),
-                  ),
-                  child: Text(
-                    "สมัคร",
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 1,
-                    style: TextStyle(
-                        color: theme!.colorScheme.primary,
-                        fontWeight: FontWeight.normal,
-                        fontSize: 18),
-                  ),
-                ))
-          ],
-        ));
+              ));
   }
 
   Widget body() {
@@ -378,7 +384,7 @@ class _PlayerPageState extends State<PlayerPage> with TickerProviderStateMixin {
                 ),
               )),
             ),
-            Container(
+            SizedBox(
                 width: width - 60,
                 child: Row(
                   mainAxisSize: MainAxisSize.max,
@@ -411,29 +417,7 @@ class _PlayerPageState extends State<PlayerPage> with TickerProviderStateMixin {
                         ],
                       ),
                     ),
-                    Container(
-                      margin: const EdgeInsets.only(left: 6),
-                      width: 30,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          MaterialButton(
-                            onPressed: () {},
-                            color:
-                                theme!.colorScheme.secondary.withOpacity(0.10),
-                            elevation: 0,
-                            textColor: Colors.white,
-                            padding: const EdgeInsets.all(10),
-                            shape: const CircleBorder(),
-                            child: Icon(
-                              CupertinoIcons.ellipsis_vertical,
-                              size: 18,
-                              color: theme!.colorScheme.secondary,
-                            ),
-                          )
-                        ],
-                      ),
-                    )
+
                   ],
                 )),
             Container(
@@ -703,99 +687,106 @@ class _PlayerPageState extends State<PlayerPage> with TickerProviderStateMixin {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            Expanded(
-              child:Container(
-                alignment: Alignment.bottomLeft,
-                height: 46,
-                padding: const EdgeInsets.only(bottom: 6),
-                margin: const EdgeInsets.only(left: 28),
-                child: Text(
-                  "เพลย์ลิสต์",
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 3,
-                  style: TextStyle(
-                      color: theme!.colorScheme.secondary,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 24),
-                ),
-              )
+        Row(children: [
+          Expanded(
+              child: Container(
+            alignment: Alignment.bottomLeft,
+            height: 46,
+            padding: const EdgeInsets.only(bottom: 6),
+            margin: const EdgeInsets.only(left: 28),
+            child: Text(
+              "เพลย์ลิสต์",
+              overflow: TextOverflow.ellipsis,
+              maxLines: 3,
+              style: TextStyle(
+                  color: theme!.colorScheme.secondary,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 24),
             ),
-            player != null ? StreamBuilder<LoopMode>(
-              stream: player.loopModeStream,
-              builder: (context, snapshot) {
-                final loopMode = snapshot.data ?? LoopMode.off;
-                List<Icon> icons = [
-                  Icon(
-                    CupertinoIcons.repeat,
-                    size: 22,
-                    color: theme!.colorScheme.secondary,
-                  ),
-                  const Icon(
-                    CupertinoIcons.repeat,
-                    size: 22,
-                    color: Colors.orange,
-                  ),
-                  const Icon(
-                    CupertinoIcons.repeat_1,
-                    size: 22,
-                    color: Colors.orange,
-                  ),
-                ];
-                const cycleModes = [
-                  LoopMode.off,
-                  LoopMode.all,
-                  LoopMode.one,
-                ];
-                final index = cycleModes.indexOf(loopMode);
-                return Container(
-                  height: 34,
-                  width: 34,
-                  child: IconButton(
-                    splashColor: Colors.transparent,
-                    padding: const EdgeInsets.all(6),
-                    onPressed: () {
-                      player.setLoopMode(cycleModes[
-                      (cycleModes.indexOf(loopMode) + 1) %
-                          cycleModes.length]);
-                    },
-                    icon: icons[index],
-                  ),
-                );
-              },
-            ) : Container(),
-            Container(width: 10,),
-            player != null ? StreamBuilder<bool>(
-              stream: player.shuffleModeEnabledStream,
-              builder: (context, snapshot) {
-                final shuffleModeEnabled = snapshot.data ?? false;
-                return Container(
-                    height: 34,
-                    width: 34,
-                    margin: EdgeInsets.only(right: 28),
-                    child: IconButton(
-                      padding: const EdgeInsets.all(6),
-                      onPressed: () async {
-                        final enable = !shuffleModeEnabled;
-                        if (enable) {
-                          await player.shuffle();
-                        }
-                        await player.setShuffleModeEnabled(enable);
-                      },
-                      icon: Icon(
-                        CupertinoIcons.shuffle,
+          )),
+          player != null
+              ? StreamBuilder<LoopMode>(
+                  stream: player.loopModeStream,
+                  builder: (context, snapshot) {
+                    final loopMode = snapshot.data ?? LoopMode.off;
+                    List<Icon> icons = [
+                      Icon(
+                        CupertinoIcons.repeat,
                         size: 22,
-                        color: shuffleModeEnabled
-                            ? Colors.orange
-                            : theme!.colorScheme.secondary,
+                        color: theme!.colorScheme.secondary,
                       ),
-                    ));
-              },
-            ) :Container(),
-          ]
+                      const Icon(
+                        CupertinoIcons.repeat,
+                        size: 22,
+                        color: Colors.orange,
+                      ),
+                      const Icon(
+                        CupertinoIcons.repeat_1,
+                        size: 22,
+                        color: Colors.orange,
+                      ),
+                    ];
+                    const cycleModes = [
+                      LoopMode.off,
+                      LoopMode.all,
+                      LoopMode.one,
+                    ];
+                    final index = cycleModes.indexOf(loopMode);
+                    return Container(
+                      height: 34,
+                      width: 34,
+                      child: IconButton(
+                        splashColor: Colors.transparent,
+                        padding: const EdgeInsets.all(6),
+                        onPressed: () {
+                          player.setLoopMode(cycleModes[
+                              (cycleModes.indexOf(loopMode) + 1) %
+                                  cycleModes.length]);
+                        },
+                        icon: icons[index],
+                      ),
+                    );
+                  },
+                )
+              : Container(),
+          Container(
+            width: 10,
+          ),
+          player != null
+              ? StreamBuilder<bool>(
+                  stream: player.shuffleModeEnabledStream,
+                  builder: (context, snapshot) {
+                    final shuffleModeEnabled = snapshot.data ?? false;
+                    return Container(
+                        height: 34,
+                        width: 34,
+                        margin: EdgeInsets.only(right: 28),
+                        child: IconButton(
+                          padding: const EdgeInsets.all(6),
+                          onPressed: () async {
+                            final enable = !shuffleModeEnabled;
+                            if (enable) {
+                              await player.shuffle();
+                            }
+                            await player.setShuffleModeEnabled(enable);
+                          },
+                          icon: Icon(
+                            CupertinoIcons.shuffle,
+                            size: 22,
+                            color: shuffleModeEnabled
+                                ? Colors.orange
+                                : theme!.colorScheme.secondary,
+                          ),
+                        ));
+                  },
+                )
+              : Container(),
+        ]),
+        Container(
+          height: 1,
+          color: theme!.colorScheme.primary.withOpacity(0.15),
+          margin: const EdgeInsets.only(left: 28, right: 28),
         ),
-        Container(height: 1,color: theme!.colorScheme.primary.withOpacity(0.15),margin: const EdgeInsets.only(left:28,right:28),),
         Expanded(
             child: player != null
                 ? StreamBuilder<SequenceState?>(
@@ -805,7 +796,8 @@ class _PlayerPageState extends State<PlayerPage> with TickerProviderStateMixin {
                       final sequence = state?.sequence ?? [];
 
                       return ReorderableListView(
-                        padding: const EdgeInsets.only(left: 20, right: 20,top:16),
+                        padding:
+                            const EdgeInsets.only(left: 20, right: 20, top: 16),
                         onReorder: (int oldIndex, int newIndex) {
                           if (oldIndex < newIndex) newIndex--;
                           //_playlist.move(oldIndex, newIndex);
@@ -897,7 +889,8 @@ class _PlayerPageState extends State<PlayerPage> with TickerProviderStateMixin {
                                                                     sigmaY:
                                                                         2.0),
                                                             child: Container(
-                                                                color: Colors.black
+                                                                color: Colors
+                                                                    .black
                                                                     .withOpacity(
                                                                         0.3),
                                                                 padding:
