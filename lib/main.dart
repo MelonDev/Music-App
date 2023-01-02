@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
         providers: [
           BlocProvider<ControllerCubit>(
-            create: (context) => ControllerCubit()..setup(),
+            create: (context) => ControllerCubit()..mock(),
             lazy: false,
           ),
         ],

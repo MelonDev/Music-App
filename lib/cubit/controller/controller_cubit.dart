@@ -2,66 +2,16 @@ import 'package:audio_service/audio_service.dart';
 import 'package:bloc/bloc.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:meta/meta.dart';
+import 'package:music_app/mock/mock_data.dart';
 import 'package:music_app/services/audio_handler.dart';
 import 'package:audio_session/audio_session.dart';
 
-
 part 'controller_state.dart';
 
-class ControllerCubit extends Cubit<AudioPlayer?> {
-  ControllerCubit() : super(null);
+class ControllerCubit extends Cubit<ControllerState> {
+  ControllerCubit() : super(ControllerInitialState());
 
-  static int _nextMediaId = 0;
-
-  final _playlist = ConcatenatingAudioSource(children: [
-    AudioSource.uri(
-      Uri.parse(
-          "https://firebasestorage.googleapis.com/v0/b/meloncloud-d2fb8.appspot.com/o/Music%2Fc1924137-03b7-4e2d-913e-8c886def861e.mp3?alt=media&token=bfb3cd5e-3a79-4e44-9cb5-3f1341469ad4"),
-      tag: MediaItem(
-        id: '${_nextMediaId++}',
-        album: "sasakure.UK",
-        title: "ズットキット･プライマリ",
-        artUri: Uri.parse(
-            "https://firebasestorage.googleapis.com/v0/b/meloncloud-d2fb8.appspot.com/o/Music%2Fc1924137-03b7-4e2d-913e-8c886def861e_base_resized.jpg?alt=media&token=b420500c-5479-40d3-91ed-e1a0266bec49"),
-      ),
-    ),
-    ClippingAudioSource(
-      start: const Duration(seconds: 60),
-      end: const Duration(seconds: 90),
-      child: AudioSource.uri(Uri.parse(
-          "https://s3.amazonaws.com/scifri-episodes/scifri20181123-episode.mp3")),
-      tag: MediaItem(
-        id: '${_nextMediaId++}',
-        album: "Science Friday",
-        title: "A Salute To Head-Scratching Science (30 seconds)",
-        artUri: Uri.parse(
-            "https://media.wnyc.org/i/1400/1400/l/80/1/ScienceFriday_WNYCStudios_1400.jpg"),
-      ),
-    ),
-    AudioSource.uri(
-      Uri.parse(
-          "https://s3.amazonaws.com/scifri-episodes/scifri20181123-episode.mp3"),
-      tag: MediaItem(
-        id: '${_nextMediaId++}',
-        album: "Science Friday",
-        title: "A Salute To Head-Scratching Science",
-        artUri: Uri.parse(
-            "https://media.wnyc.org/i/1400/1400/l/80/1/ScienceFriday_WNYCStudios_1400.jpg"),
-      ),
-    ),
-    AudioSource.uri(
-      Uri.parse("https://s3.amazonaws.com/scifri-segments/scifri201711241.mp3"),
-      tag: MediaItem(
-        id: '${_nextMediaId++}',
-        album: "Science Friday",
-        title: "From Cat Rheology To Operatic Incompetence",
-        artUri: Uri.parse(
-            "https://media.wnyc.org/i/1400/1400/l/80/1/ScienceFriday_WNYCStudios_1400.jpg"),
-      ),
-    ),
-  ]);
-
-  setup() async {
+  /*old_setup() async {
     print("setup");
     final session = await AudioSession.instance;
     await session.configure(const AudioSessionConfiguration.speech());
@@ -82,13 +32,139 @@ class ControllerCubit extends Cubit<AudioPlayer?> {
       print("Error loading playlist: $e");
       print(stackTrace);
     }
+
+  }*/
+
+  mock() async {
+    final session = await AudioSession.instance;
+    await session.configure(const AudioSessionConfiguration.speech());
+
+    AudioPlayer player = AudioPlayer();
+    ControllerIdleState state = ControllerIdleState(player: player);
+    await setPlaylist(playlist: mockPlaylist1, previousState: state);
   }
 
-  play() async{
-    state?.play();
+  setup() async {
+    final session = await AudioSession.instance;
+    await session.configure(const AudioSessionConfiguration.speech());
+
+    AudioPlayer player = AudioPlayer();
+
+    emit(ControllerIdleState(player: player));
   }
 
-  stop() async{
-    state?.pause();
+  setPlaylist(
+      {required List<AudioSource> playlist,
+      required ControllerMediaState previousState}) async {
+    try {
+      previousState.playlist = ConcatenatingAudioSource(children: playlist);
+      await previousState.player.setAudioSource(
+          previousState.playlist!);
+      emit(previousState);
+    } catch (e, stackTrace) {
+      // Catch load errors: 404, invalid url ...
+      print("Error loading playlist: $e");
+      print(stackTrace);
+    }
   }
+
+  newPlaylist(
+      {required List<AudioSource> playlist,
+      required ControllerMediaState previousState,bool play = false}) async {
+    try {
+      ControllerPlayingState newState =
+          ControllerPlayingState(player: previousState.player);
+      newState.playlist = ConcatenatingAudioSource(children: playlist);
+      await newState.player.setAudioSource(
+          newState.playlist!);
+      newState.player.play();
+      emit(newState);
+    } catch (e, stackTrace) {
+      // Catch load errors: 404, invalid url ...
+      print("Error loading playlist: $e");
+      print(stackTrace);
+    }
+  }
+
+  play({required ControllerMediaState previousState,int? index}) async {
+    ControllerPlayingState newState =
+        ControllerPlayingState(player: previousState.player)
+          ..currentId = previousState.currentId
+          ..playlist = previousState.playlist
+          ..isShuffle = previousState.isShuffle
+          ..loopMode = previousState.loopMode;
+
+    if(index != null){
+      newState.player.seek(Duration.zero, index: index);
+    }
+
+    newState.player.play();
+
+    emit(newState);
+  }
+
+  pause({required ControllerMediaState previousState}) async {
+    ControllerPauseState newState =
+        ControllerPauseState(player: previousState.player)
+          ..currentId = previousState.currentId
+          ..playlist = previousState.playlist
+          ..isShuffle = previousState.isShuffle
+          ..loopMode = previousState.loopMode;
+    newState.player.pause();
+
+    emit(newState);
+  }
+
+  stop({required ControllerMediaState previousState}) async {
+    previousState.player.stop();
+    ControllerIdleState newState =
+    ControllerIdleState(player: previousState.player);
+    emit(newState);
+  }
+
+  shuffle(bool value, {required ControllerMediaState previousState}) async {
+    previousState.isShuffle = value;
+    if (value) {
+      await previousState.player.shuffle();
+    }
+    await previousState.player.setShuffleModeEnabled(value);
+    emit(previousState);
+  }
+
+  loop(LoopMode value, {required ControllerMediaState previousState}) async {
+    const cycleModes = [
+      LoopMode.off,
+      LoopMode.all,
+      LoopMode.one,
+    ];
+
+    previousState.loopMode = value;
+    await previousState.player.setLoopMode(cycleModes[
+    (cycleModes.indexOf(value) + 1) %
+        cycleModes.length]);
+    emit(previousState);
+  }
+
+  next({required ControllerMediaState previousState}) async {
+    previousState.player.seekToNext();
+    emit(previousState);
+  }
+
+  previous({required ControllerMediaState previousState}) async {
+    previousState.player.seekToPrevious();
+    emit(previousState);
+  }
+
+  move({required ControllerMediaState previousState,required int oldIndex,required int  newIndex}){
+    if (oldIndex < newIndex) newIndex--;
+    previousState.playlist?.move(oldIndex, newIndex);
+    emit(previousState);
+  }
+
+  remove({required ControllerMediaState previousState,required int index}){
+    previousState.playlist?.removeAt(index);
+    emit(previousState);
+  }
+
+
 }
