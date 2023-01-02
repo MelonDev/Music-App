@@ -443,8 +443,9 @@ class _PlayerPageState extends State<PlayerPage> with TickerProviderStateMixin {
               height: 1,
             ),
             Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.max,
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   loopButton(state),
                   Container(
@@ -618,7 +619,10 @@ class _PlayerPageState extends State<PlayerPage> with TickerProviderStateMixin {
             return ReorderableListView(
               padding: const EdgeInsets.only(left: 20, right: 20, top: 16),
               onReorder: (int oldIndex, int newIndex) {
-                context.read<ControllerCubit>().move(previousState: state,oldIndex: oldIndex,newIndex: newIndex);
+                context.read<ControllerCubit>().move(
+                    previousState: state,
+                    oldIndex: oldIndex,
+                    newIndex: newIndex);
               },
               children: [
                 for (var i = 0; i < sequence.length; i++)
@@ -662,13 +666,15 @@ class _PlayerPageState extends State<PlayerPage> with TickerProviderStateMixin {
                           ),
                         ),
                         onDismissed: (dismissDirection) {
-                          context.read<ControllerCubit>().remove(previousState: state,index: i);
-
+                          context
+                              .read<ControllerCubit>()
+                              .remove(previousState: state, index: i);
                         },
                         child: GestureDetector(
                           onTap: () {
-                            context.read<ControllerCubit>().play(previousState: state,index: i);
-
+                            context
+                                .read<ControllerCubit>()
+                                .play(previousState: state, index: i);
                           },
                           child: Container(
                               constraints: const BoxConstraints(minHeight: 80),
@@ -688,7 +694,10 @@ class _PlayerPageState extends State<PlayerPage> with TickerProviderStateMixin {
                                       child: Stack(
                                         children: [
                                           Image.network(
-                                              "${sequence[i].tag.artUri}",width: 50,height: 50,fit: BoxFit.cover),
+                                              "${sequence[i].tag.artUri}",
+                                              width: 50,
+                                              height: 50,
+                                              fit: BoxFit.cover),
                                           i == playState?.currentIndex
                                               ? BackdropFilter(
                                                   filter: ImageFilter.blur(
@@ -761,7 +770,7 @@ class _PlayerPageState extends State<PlayerPage> with TickerProviderStateMixin {
     );
   }
 
-  Widget shuffleButton(ControllerMediaState state){
+  Widget shuffleButton(ControllerMediaState state) {
     return StreamBuilder<bool>(
       stream: state.player.shuffleModeEnabledStream,
       builder: (context, snapshot) {
@@ -769,7 +778,6 @@ class _PlayerPageState extends State<PlayerPage> with TickerProviderStateMixin {
         return Container(
             height: 34,
             width: 34,
-            margin: const EdgeInsets.only(right: 28),
             child: IconButton(
               padding: const EdgeInsets.all(6),
               onPressed: () async {
@@ -789,7 +797,7 @@ class _PlayerPageState extends State<PlayerPage> with TickerProviderStateMixin {
     );
   }
 
-  Widget loopButton(ControllerMediaState state){
+  Widget loopButton(ControllerMediaState state) {
     return StreamBuilder<LoopMode>(
       stream: state.player.loopModeStream,
       builder: (context, snapshot) {
@@ -820,6 +828,7 @@ class _PlayerPageState extends State<PlayerPage> with TickerProviderStateMixin {
         return Container(
           height: 34,
           width: 34,
+
           child: IconButton(
             splashColor: Colors.transparent,
             padding: const EdgeInsets.all(6),
@@ -835,7 +844,7 @@ class _PlayerPageState extends State<PlayerPage> with TickerProviderStateMixin {
     );
   }
 
-  Widget forwardButton(ControllerMediaState state){
+  Widget forwardButton(ControllerMediaState state) {
     return StreamBuilder<SequenceState?>(
       stream: state.player.sequenceStateStream,
       builder: (context, snapshot) => SizedBox(
@@ -846,10 +855,8 @@ class _PlayerPageState extends State<PlayerPage> with TickerProviderStateMixin {
             padding: const EdgeInsets.all(12),
             onPressed: state.player.hasNext
                 ? () {
-              context
-                  .read<ControllerCubit>()
-                  .next(previousState: state);
-            }
+                    context.read<ControllerCubit>().next(previousState: state);
+                  }
                 : null,
             icon: Icon(
               CupertinoIcons.forward_fill,
@@ -861,7 +868,7 @@ class _PlayerPageState extends State<PlayerPage> with TickerProviderStateMixin {
     );
   }
 
-  Widget previousButton(ControllerMediaState state){
+  Widget previousButton(ControllerMediaState state) {
     return StreamBuilder<SequenceState?>(
       stream: state.player.sequenceStateStream,
       builder: (context, snapshot) => Container(
@@ -872,16 +879,16 @@ class _PlayerPageState extends State<PlayerPage> with TickerProviderStateMixin {
           padding: const EdgeInsets.all(12),
           onPressed: state.player.hasPrevious
               ? () {
-            context
-                .read<ControllerCubit>()
-                .previous(previousState: state);
-          }
+                  context
+                      .read<ControllerCubit>()
+                      .previous(previousState: state);
+                }
               : null,
           icon: Icon(
             CupertinoIcons.backward_fill,
             size: 28,
-            color: theme!.colorScheme.secondary.withOpacity(
-                state.player.hasPrevious ? 1.0 : 0.3),
+            color: theme!.colorScheme.secondary
+                .withOpacity(state.player.hasPrevious ? 1.0 : 0.3),
           ),
         ),
       ),

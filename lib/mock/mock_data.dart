@@ -25,8 +25,8 @@ List<AudioSource> myRecentMusic = [
         "https://firebasestorage.googleapis.com/v0/b/meloncloud-d2fb8.appspot.com/o/Music%2FiMeiden%20-%20Tower%20Light%20Fireworks%20(feat.%20Rachie).mp3?alt=media&token=134ac5f0-0756-4800-8195-50ea8e5dc57f"),
     tag: MediaItem(
       id: '1',
-      album: "Tower Light Fireworks",
-      title: "Rachie",
+      album: "Rachie",
+      title: "Tower Light Fireworks",
       artUri: Uri.parse(
           "https://firebasestorage.googleapis.com/v0/b/meloncloud-d2fb8.appspot.com/o/Music%2Fartworks-000354253638-9o84p6-t500x500.jpg?alt=media&token=74d98208-6075-4f5e-b814-262c04a08f91"),
     ),
@@ -95,7 +95,7 @@ List<AudioSource> mockSuggestionPlaylists = [
   ),
   AudioSource.uri(
     Uri.parse(
-        "https://firebasestorage.googleapis.com/v0/b/meloncloud-d2fb8.appspot.com/o/Music%2Fc1924137-03b7-4e2d-913e-8c886def861e.mp3?alt=media&token=bfb3cd5e-3a79-4e44-9cb5-3f1341469ad4"),
+        "https://firebasestorage.googleapis.com/v0/b/meloncloud-d2fb8.appspot.com/o/Music%2F%5BTropical%20House%5D%20-%20Hyper%20Potions%20-%20Unbreakable%20(feat.%20Danyka%20Nadeau)%20%5BMonstercat%20Release%5D.mp3?alt=media&token=fb07ce32-c853-495c-8523-47ccedabb694"),
     tag: MediaItem(
       id: '3',
       album: "Hyper Potions",
@@ -109,8 +109,8 @@ List<AudioSource> mockSuggestionPlaylists = [
         "https://firebasestorage.googleapis.com/v0/b/meloncloud-d2fb8.appspot.com/o/Music%2FI'm%20Moving%20On.mp3?alt=media&token=28be6e6d-49b6-44de-9f0b-2892680e6e29"),
     tag: MediaItem(
       id: '4',
-      album: "I'm Moving On",
-      title: "Happy Republic",
+      album: "Happy Republic",
+      title: "I'm Moving On",
       artUri: Uri.parse(
           "https://firebasestorage.googleapis.com/v0/b/meloncloud-d2fb8.appspot.com/o/Music%2Fpedro-lastra-Nyvq2juw4_o-unsplash.jpg?alt=media&token=15a1f1bb-fe6d-4042-96b2-eab4ef5e41df"),
     ),
@@ -149,8 +149,8 @@ List<AudioSource> mockPlaylist1 = [
         "https://firebasestorage.googleapis.com/v0/b/meloncloud-d2fb8.appspot.com/o/Music%2FiMeiden%20-%20Tower%20Light%20Fireworks%20(feat.%20Rachie).mp3?alt=media&token=134ac5f0-0756-4800-8195-50ea8e5dc57f"),
     tag: MediaItem(
       id: '2',
-      album: "Tower Light Fireworks",
-      title: "Rachie",
+      album: "Rachie",
+      title: "Tower Light Fireworks",
       artUri: Uri.parse(
           "https://firebasestorage.googleapis.com/v0/b/meloncloud-d2fb8.appspot.com/o/Music%2Fartworks-000354253638-9o84p6-t500x500.jpg?alt=media&token=74d98208-6075-4f5e-b814-262c04a08f91"),
     ),
@@ -160,8 +160,8 @@ List<AudioSource> mockPlaylist1 = [
         "https://firebasestorage.googleapis.com/v0/b/meloncloud-d2fb8.appspot.com/o/Music%2FI'm%20Moving%20On.mp3?alt=media&token=28be6e6d-49b6-44de-9f0b-2892680e6e29"),
     tag: MediaItem(
       id: '3',
-      album: "I'm Moving On",
-      title: "Happy Republic",
+      album: "Happy Republic",
+      title: "I'm Moving On",
       artUri: Uri.parse(
           "https://firebasestorage.googleapis.com/v0/b/meloncloud-d2fb8.appspot.com/o/Music%2Fpedro-lastra-Nyvq2juw4_o-unsplash.jpg?alt=media&token=15a1f1bb-fe6d-4042-96b2-eab4ef5e41df"),
     ),
@@ -174,8 +174,8 @@ List<AudioSource> mockPlaylist2 = [
         "https://firebasestorage.googleapis.com/v0/b/meloncloud-d2fb8.appspot.com/o/Music%2FI'm%20Moving%20On.mp3?alt=media&token=28be6e6d-49b6-44de-9f0b-2892680e6e29"),
     tag: MediaItem(
       id: '2',
-      album: "I'm Moving On",
-      title: "Happy Republic",
+      album: "Happy Republic",
+      title: "I'm Moving On",
       artUri: Uri.parse(
           "https://firebasestorage.googleapis.com/v0/b/meloncloud-d2fb8.appspot.com/o/Music%2Fpedro-lastra-Nyvq2juw4_o-unsplash.jpg?alt=media&token=15a1f1bb-fe6d-4042-96b2-eab4ef5e41df"),
     ),
