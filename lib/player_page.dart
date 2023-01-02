@@ -603,6 +603,9 @@ class _PlayerPageState extends State<PlayerPage> with TickerProviderStateMixin {
             width: 10,
           ),
           shuffleButton(state),
+          Container(
+            width: 20,
+          ),
         ]),
         Container(
           height: 1,
