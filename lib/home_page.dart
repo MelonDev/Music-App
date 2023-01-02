@@ -199,6 +199,8 @@ class _HomePageState extends State<HomePage>
             isShowPlayer
                 ? Dismissible(
                     key: ValueKey(state.playlist?.children[0]),
+                    //direction: DismissDirection.down,
+                    //background: Container(color:Colors.lightGreen),
                     onDismissed: (dismissDirection) {
                       context
                           .read<ControllerCubit>()
