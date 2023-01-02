@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = ThemeData(colorSchemeSeed: Colors.orange, useMaterial3: true);
+    final theme = ThemeData(colorSchemeSeed: Colors.orange, useMaterial3: true,brightness: Brightness.light);
 
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
@@ -44,6 +44,7 @@ class MyApp extends StatelessWidget {
               colorScheme: theme.colorScheme,
               useMaterial3: theme.useMaterial3,
               splashColor: Colors.transparent,
+              brightness: theme.colorScheme.brightness,
               textTheme: GoogleFonts.itimTextTheme(theme.textTheme),
               navigationBarTheme: NavigationBarThemeData(
                 backgroundColor: theme.colorScheme.surface,

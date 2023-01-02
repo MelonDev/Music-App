@@ -23,6 +23,7 @@ dependencies:
   percent_indicator: ^4.2.2
   custom_sliding_segmented_control: ^1.7.3
   volume_controller: ^2.0.6
+  dynamic_color: ^1.5.4
 
 
   bloc: ^8.1.0

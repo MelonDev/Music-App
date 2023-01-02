@@ -272,7 +272,7 @@ class _HomePageState extends State<HomePage>
     return GestureDetector(
       onTap: _floatingPlayerOnPressed,
       child: Container(
-        height: 70,
+        height: 60,
         padding: const EdgeInsets.only(bottom: 2),
         width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
@@ -292,8 +292,8 @@ class _HomePageState extends State<HomePage>
                     alignment: Alignment.centerLeft,
                     child: Container(
                         margin: const EdgeInsets.only(left: 12),
-                        height: 52,
-                        width: 52,
+                        height: 50,
+                        width: 50,
                         decoration: BoxDecoration(
                             color: theme!.colorScheme.secondary,
                             borderRadius: BorderRadius.circular(12)),
@@ -314,7 +314,7 @@ class _HomePageState extends State<HomePage>
                     alignment: Alignment.topLeft,
                     child: Container(
                         margin: const EdgeInsets.only(
-                            left: 76, top: 8, bottom: 8, right: 122),
+                            left: 70, top: 4, bottom: 0, right: 122),
                         child: Column(
                           mainAxisSize: MainAxisSize.max,
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -326,7 +326,7 @@ class _HomePageState extends State<HomePage>
                               style: TextStyle(
                                   color: theme!.colorScheme.secondary,
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 20),
+                                  fontSize: 18),
                             ),
                             Text(
                               metadata.album ?? "ไม่ระบุ",
